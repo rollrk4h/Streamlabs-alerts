@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pittner Vivien sub/cheer/donate alert</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Teko|Shadows+Into+Light");
+      body {
+        background-color: transparent;
+        font-family: "Teko", normal;
+      }
+
+      .hullahooo {
+        width: 100px;
+      }
+
+      #gomb {
+        height: auto;
+        width: 50%;
+        margin-top: 155px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 0;
+        overflow: hidden;
+        background-color: red;
+        position: absolute;
+      }
+
+      .border_anim {
+        background: linear-gradient(90deg, white 50%, transparent 50%),
+          linear-gradient(90deg, white 50%, transparent 50%),
+          linear-gradient(0deg, white 50%, transparent 50%),
+          linear-gradient(0deg, white 50%, transparent 50%);
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 16px 4px, 16px 4px, 4px 16px, 4px 16px;
+        background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0px;
+        border-radius: 5px;
+        padding: 0;
+        animation: dash 15s linear infinite;
+      }
+
+      @keyframes dash {
+        to {
+          background-position: 100% 0%, 0% 100%, 0% 0%, 100% 100%;
+        }
+      }
+
+      .wee_animacio {
+        position: absolute;
+        /*animation: wee 1s 1s linear ;*/
+        z-index: 3434;
+      }
+
+      .hullahooo {
+        z-index: 34234234;
+        width: 95% !important;
+        margin-top: 2.5% !important;
+        margin-left: 2.5% !important;
+        margin-bottom: 2.5% !important;
+        margin-right: 2.5% !important;
+      }
+      .pittner_kep {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sky {
+        height: 100%;
+        color: #fff;
+        font-family: Helvetica;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pittner_kep center">
+      <img
+        class="wee_animacio animate__animated animate__fadeInDownBig animate__delay-0s"
+        src="https://sterbinaroland.hu/pittner/pittner_kari.png"
+        style="width: 250px; height: auto; top: 15px"
+      />
+    </div>
+
+    <div id="gomb" class="animate__animated animate__flipInX">
+      <section class="sky" style="height: 100%; width: 100%">
+        <div
+          class="hullahooo border_anim animate__animated animate__fadeInLeftBig"
+        >
+          <br />
+          <h4
+            class="animate__animated animate__bounceInLeft animate__delay-1s"
+            style="margin-top: 50px; font-size: 24px; font-family: Teko"
+          >
+            {name}
+          </h4>
+          <h4
+            class="animate__animated animate__bounceInRight animate__delay-2s"
+            style="font-size: 20x; font-family: 'Shadows Into Light'"
+          >
+            feliratkozott ez a(z) {months}. hónapja!
+          </h4>
+          <div id="alert-text">
+            <br />
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      var particleCount = 5;
+      var particleMax = 25;
+      var sky = document.querySelector(".sky");
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      var width = sky.clientWidth;
+      var height = sky.clientHeight;
+      var i = 0;
+      var active = false;
+      var snowflakes = [];
+      var snowflake;
+
+      canvas.style.position = "absolute";
+      canvas.style.left = canvas.style.top = "0";
+
+      var Snowflake = function () {
+        this.x = 0;
+        this.y = 0;
+        this.vy = 0;
+        this.vx = 0;
+        this.r = 0;
+
+        this.reset();
+      };
+
+      Snowflake.prototype.reset = function () {
+        this.x = Math.random() * width;
+        this.y = Math.random() * -height;
+        this.vy = 1 + Math.random() * 3;
+        this.vx = 0.5 - Math.random();
+        this.r = 1 + Math.random() * 2;
+        this.o = 0.5 + Math.random() * 0.5;
+      };
+
+      function generateSnowFlakes() {
+        snowflakes = [];
+        for (i = 0; i < particleMax; i++) {
+          snowflake = new Snowflake();
+          snowflake.reset();
+          snowflakes.push(snowflake);
+        }
+      }
+
+      generateSnowFlakes();
+
+      function update() {
+        ctx.clearRect(0, 0, width, height);
+
+        if (!active) {
+          return;
+        }
+
+        for (i = 0; i < particleCount; i++) {
+          snowflake = snowflakes[i];
+          snowflake.y += snowflake.vy;
+          snowflake.x += snowflake.vx;
+
+          ctx.globalAlpha = snowflake.o;
+          ctx.beginPath();
+          ctx.arc(snowflake.x, snowflake.y, snowflake.r, 0, Math.PI * 2, false);
+          ctx.closePath();
+          ctx.fill();
+
+          if (snowflake.y > height) {
+            snowflake.reset();
+          }
+        }
+
+        requestAnimFrame(update);
+      }
+
+      function onResize() {
+        width = sky.clientWidth;
+        height = sky.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+        ctx.fillStyle = "#FFF";
+
+        var wasActive = active;
+        active = width > 200;
+
+        if (!wasActive && active) {
+          requestAnimFrame(update);
+        }
+      }
+
+      window.requestAnimFrame = (function () {
+        return (
+          window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+          }
+        );
+      })();
+
+      onResize();
+      window.addEventListener("resize", onResize, false);
+
+      sky.appendChild(canvas);
+
+      var gui = new dat.GUI();
+      gui
+        .add(window, "particleCount")
+        .min(1)
+        .max(particleMax)
+        .step(1)
+        .name("Particles count")
+        .onFinishChange(function () {
+          requestAnimFrame(update);
+        });
+    </script>
+  </body>
+</html>
